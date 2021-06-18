@@ -1,11 +1,13 @@
-package eu.epptec.analyticGeometry.shapes;
+package eu.epptec.analyticGeometry.shapes.elementary;
+
+import eu.epptec.analyticGeometry.shapes.Shape;
 
 import java.util.LinkedList;
 
 public class Point implements Shape {
     private double x, y;
 
-    Point(double x, double y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -39,21 +41,11 @@ public class Point implements Shape {
         xOut += x * angleCos - y * angleSin;
         yOut += x * angleSin - y * angleCos;
 
-        return new Point(x, y);
+        return new Point(xOut, yOut);
     }
 
     @Override
     public Point getCenter() {
         return this;
-    }
-
-    @Override
-    public double getIntersectingArea(Shape intersectingShape) {
-        return 0;
-    }
-
-    @Override
-    public LinkedList<Point> getIntersectingPoints(Shape intersectingShape) {
-        return null;
     }
 }

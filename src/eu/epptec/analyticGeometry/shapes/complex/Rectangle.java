@@ -1,4 +1,6 @@
-package eu.epptec.analyticGeometry.shapes;
+package eu.epptec.analyticGeometry.shapes.complex;
+
+import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
 public class Rectangle extends Rhomboid {
 

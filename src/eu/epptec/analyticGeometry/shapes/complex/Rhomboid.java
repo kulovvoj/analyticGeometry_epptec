@@ -1,8 +1,12 @@
-package eu.epptec.analyticGeometry.shapes;
+package eu.epptec.analyticGeometry.shapes.complex;
+
+import eu.epptec.analyticGeometry.shapes.Shape2D;
+import eu.epptec.analyticGeometry.shapes.basic.Line;
+import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
 import java.util.LinkedList;
 
-public class Rhomboid implements Shape {
+public class Rhomboid implements Shape2D {
 
     // Points of the rhomboid
     //  a ------ b
@@ -64,12 +68,14 @@ public class Rhomboid implements Shape {
 
     //TODO
     @Override
-    public double getIntersectingArea(Shape intersectingShape) {
+    public LinkedList<Point> getIntersectingPoints(Shape2D other) {
+        return null;
+    }
+
+    //TODO
+    @Override
+    public double getIntersectingArea(Shape2D other) {
         return 0;
     }
 
-    @Override
-    public LinkedList<Point> getIntersectingPoints(Shape intersectingShape) {
-        return null;
-    }
 }
