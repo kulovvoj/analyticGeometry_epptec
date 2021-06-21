@@ -1,10 +1,9 @@
-package eu.epptec.analyticGeometry.shapes.basic;
+package eu.epptec.analyticGeometry.shapes.elementary;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
-import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.lang.Math.*;
 
@@ -41,13 +40,13 @@ public class Circle implements Shape {
         return new Circle(center.rotate(angle, pivot), radius);
     }
 
-    public List<Point> getIntersectingPoints(Line other) {
+    public Set<Point> getIntersectingPoints(Line other) {
         return other.getIntersectingPoints(this);
     }
 
     @Override
-    public List<Point> getIntersectingPoints(Shape other) {
-        List<Point> lst = new LinkedList<>();
+    public Set<Point> getIntersectingPoints(Shape other) {
+        Set<Point> lst = new HashSet<>();
         if (other instanceof Circle)
             lst.addAll(getIntersectingPointsCircle((Circle)other));
         else
@@ -55,12 +54,12 @@ public class Circle implements Shape {
         return lst;
     }
 
-    private List<Point> getIntersectingPointsCircle(Circle other) {
+    private Set<Point> getIntersectingPointsCircle(Circle other) {
         // Make sure that this circle is larger than the one passed as argument
         if (other.getRadius() > radius)
             other.getIntersectingPoints(this);
 
-        List<Point> intersections = new LinkedList<>();
+        Set<Point> intersections = new HashSet<>();
         Line centersLine = new Line(center, other.getCenter());
         double centersDistance = centersLine.getLength();
 

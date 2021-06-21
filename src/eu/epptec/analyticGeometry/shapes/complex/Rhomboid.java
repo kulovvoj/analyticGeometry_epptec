@@ -1,11 +1,11 @@
 package eu.epptec.analyticGeometry.shapes.complex;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
-import eu.epptec.analyticGeometry.shapes.basic.Line;
+import eu.epptec.analyticGeometry.shapes.elementary.Line;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Rhomboid implements Shape {
 
@@ -47,8 +47,8 @@ public class Rhomboid implements Shape {
         return c.move(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    public List<Line> getLines() {
-        List<Line> lines = new LinkedList<>();
+    public Set<Line> getLines() {
+        Set<Line> lines = new HashSet<>();
         lines.add(new Line(a, b));
         lines.add(new Line(b, c));
         lines.add(new Line(c, getD()));
@@ -77,8 +77,8 @@ public class Rhomboid implements Shape {
     }
 
     @Override
-    public List<Point> getIntersectingPoints(Shape other) {
-        List<Point> intersections = new LinkedList<>();
+    public Set<Point> getIntersectingPoints(Shape other) {
+        Set<Point> intersections = new HashSet<>();
         getLines().forEach(line -> intersections.addAll(line.getIntersectingPoints(other)));
         return intersections;
     }

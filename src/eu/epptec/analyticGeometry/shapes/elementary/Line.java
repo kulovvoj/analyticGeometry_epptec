@@ -1,11 +1,11 @@
-package eu.epptec.analyticGeometry.shapes.basic;
+package eu.epptec.analyticGeometry.shapes.elementary;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
-import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Line implements Shape {
     private final Point a, b;
@@ -68,8 +68,8 @@ public class Line implements Shape {
 
     //TODO
     @Override
-    public List<Point> getIntersectingPoints(Shape other) {
-        List<Point> lst = new LinkedList<>();
+    public Set<Point> getIntersectingPoints(Shape other) {
+        Set<Point> lst = new HashSet<>();
         if (other instanceof Line)
             lst.addAll(getIntersectingPointsLine((Line)other));
         else if (other instanceof Circle)
@@ -80,8 +80,8 @@ public class Line implements Shape {
     }
 
     // Calculates the intersections between a line and a line
-    private List<Point> getIntersectingPointsLine(Line other) {
-        List<Point> intersections = new LinkedList<>();
+    private Set<Point> getIntersectingPointsLine(Line other) {
+        Set<Point> intersections = new HashSet<>();
 
         double denom = (a.getX() - b.getX()) * (other.getA().getY() - other.getB().getY())
                 - (a.getY() - b.getY()) * (other.getA().getX() - other.getB().getX());
@@ -110,8 +110,8 @@ public class Line implements Shape {
     // Calculates the intersections between this line and a circle
     // We move the circle's center to origin point (0, 0) for easier calculation, after we're
     // finished with the calculations, we compensate for the movement
-    private List<Point> getIntersectingPointsCircle(Circle other) {
-        List<Point> intersections = new LinkedList<>();
+    private Set<Point> getIntersectingPointsCircle(Circle other) {
+        Set<Point> intersections = new HashSet<>();
 
         double r = other.getRadius();
         double genEqA, genEqB, genEqC;

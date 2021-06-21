@@ -2,7 +2,6 @@ package eu.epptec.analyticGeometry;
 
 import eu.epptec.analyticGeometry.application.Application;
 import eu.epptec.analyticGeometry.shapes.elementary.*;
-import eu.epptec.analyticGeometry.shapes.basic.*;
 import eu.epptec.analyticGeometry.shapes.complex.*;
 
 public class Main {

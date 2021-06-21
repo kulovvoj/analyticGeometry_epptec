@@ -1,11 +1,9 @@
 package eu.epptec.analyticGeometry.shapes.elementary;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
-import eu.epptec.analyticGeometry.shapes.basic.Circle;
-import eu.epptec.analyticGeometry.shapes.basic.Line;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.Set;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
@@ -45,7 +43,7 @@ public class Point implements Shape {
         double yTmp = y - pivot.getY();
 
         double xOut = xTmp * angleCos - yTmp * angleSin;
-        double yOut = xTmp * angleSin - yTmp * angleCos;
+        double yOut = xTmp * angleSin + yTmp * angleCos;
 
         xOut += pivot.getX();
         yOut += pivot.getY();
@@ -59,8 +57,8 @@ public class Point implements Shape {
     }
 
     @Override
-    public List<Point> getIntersectingPoints(Shape other) {
-        List<Point> intersections = new LinkedList<>();
+    public Set<Point> getIntersectingPoints(Shape other) {
+        Set<Point> intersections = new HashSet<>();
         if (other instanceof Point)
             intersections.addAll(getIntersectingPointsPoint((Point)other));
         else if (other instanceof Line)
@@ -73,16 +71,16 @@ public class Point implements Shape {
     }
 
     // If the points have the same coordinates, they intersect
-    private List<Point> getIntersectingPointsPoint(Point other) {
-        List<Point> intersections = new LinkedList<>();
+    private Set<Point> getIntersectingPointsPoint(Point other) {
+        Set<Point> intersections = new HashSet<>();
         if (abs(x - other.getX()) < EPS && abs(y - other.getY()) < EPS)
             intersections.add(this);
         return intersections;
     }
 
     // If the point lies on the line, they intersect
-    private List<Point> getIntersectingPointsLine(Line other) {
-        List<Point> intersections = new LinkedList<>();
+    private Set<Point> getIntersectingPointsLine(Line other) {
+        Set<Point> intersections = new HashSet<>();
         List<Double> genEq = other.getGeneralEquation();
         if (abs(genEq.get(0) * x + genEq.get(1) * y + genEq.get(2)) < EPS && other.isInBoundary(this))
             intersections.add(this);
@@ -90,8 +88,8 @@ public class Point implements Shape {
     }
 
     // If the point lies on the circle, they intersect
-    private List<Point> getIntersectingPointsCircle(Circle other) {
-        List<Point> intersections = new LinkedList<>();
+    private Set<Point> getIntersectingPointsCircle(Circle other) {
+        Set<Point> intersections = new HashSet<>();
         if (abs(pow(x - other.getCenter().getX(), 2) + pow(y - other.getCenter().getY(), 2) - pow(other.getRadius(), 2)) < EPS)
             intersections.add(this);
         return intersections;
@@ -100,5 +98,15 @@ public class Point implements Shape {
     @Override
     public String toString() {
         return "Point - [" + x + ", " + y + "]";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this)
+            return true;
+        if (!(other instanceof Point))
+            return false;
+        Point otherPoint = (Point)other;
+        return abs(x - otherPoint.getX()) < EPS && abs(y - otherPoint.getY()) < EPS;
     }
 }

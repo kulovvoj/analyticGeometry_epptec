@@ -27,11 +27,11 @@ public class Space {
     public String toString() {
         String outputStr;
         outputStr = "{";
-        List<String> shapeStrList = new LinkedList<>();
-        shapeMap.entrySet().forEach(entry -> shapeStrList.add(entry.getKey() + ": " + entry.getValue().toString()));
+        Set<String> shapeStrSet = new HashSet<>();
+        shapeMap.entrySet().forEach(entry -> shapeStrSet.add(entry.getKey() + ": " + entry.getValue().toString()));
 
         StringJoiner joiner = new StringJoiner(",\n");
-        shapeStrList.forEach(shapeStr -> joiner.add(shapeStr));
+        shapeStrSet.forEach(shapeStr -> joiner.add(shapeStr));
         outputStr += joiner.toString();
         outputStr += "}";
         return outputStr;
