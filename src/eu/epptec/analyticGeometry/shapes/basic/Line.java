@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Line implements Shape {
-    private Point a, b;
+    private final Point a, b;
 
     public Line(Point a, Point b) {
         this.a = a;
@@ -54,14 +54,16 @@ public class Line implements Shape {
         return new Line(a.rotate(angle, pivot), b.rotate(angle, pivot));
     }
 
-    // Tests whether number a is in between numbers b and c
+    // Tests whether number x is in between numbers y and z
+    // Whether y > z or z > y doesn't matter
     private static boolean isInbetween (double x, double y, double z) {
-        return (y + EPS >= x && x + EPS >= z) || (z + EPS >= x && x + EPS >= y);
+        return (y + EPS > x && x + EPS > z) || (z + EPS > x && x + EPS > y);
     }
 
-    // Tests whether point a is in the boundary defined by points b and c
+    // Tests whether point a is in the boundary defined by the line
     public boolean isInBoundary(Point point) {
-        return isInbetween(point.getX(), a.getX(), b.getX()) || isInbetween(point.getY(), b.getY(), a.getY());
+        boolean out = isInbetween(point.getX(), a.getX(), b.getX()) && isInbetween(point.getY(), b.getY(), a.getY());
+        return out;
     }
 
     //TODO
@@ -98,21 +100,23 @@ public class Line implements Shape {
                         / denom;
 
         Point intersectionPoint = new Point(intersectionX, intersectionY);
-        if (this.isInBoundary(intersectionPoint) && other.isInBoundary(intersectionPoint))
+        if (this.isInBoundary(intersectionPoint) && other.isInBoundary(intersectionPoint)) {
             intersections.add(intersectionPoint);
+        }
 
         return intersections;
     }
 
     // Calculates the intersections between this line and a circle
-    // We move the circle's center to (0, 0) for easier calculation
+    // We move the circle's center to origin point (0, 0) for easier calculation, after we're
+    // finished with the calculations, we compensate for the movement
     private List<Point> getIntersectingPointsCircle(Circle other) {
         List<Point> intersections = new LinkedList<>();
 
         double r = other.getRadius();
         double genEqA, genEqB, genEqC;
 
-        // Get the general equation of moved line
+        // Get the general equation of the moved line
         List<Double> generalEquation = this.move(-other.getCenter().getX(), -other.getCenter().getY()).getGeneralEquation();
         genEqA = generalEquation.get(0);
         genEqB = generalEquation.get(1);

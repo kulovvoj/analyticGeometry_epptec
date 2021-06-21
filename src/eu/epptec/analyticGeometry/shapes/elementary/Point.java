@@ -41,11 +41,14 @@ public class Point implements Shape {
         double angleSin = Math.sin(angle);
         double angleCos = Math.cos(angle);
 
-        double xOut = x - pivot.getX();
-        double yOut = y - pivot.getY();
+        double xTmp = x - pivot.getX();
+        double yTmp = y - pivot.getY();
 
-        xOut += x * angleCos - y * angleSin;
-        yOut += x * angleSin - y * angleCos;
+        double xOut = xTmp * angleCos - yTmp * angleSin;
+        double yOut = xTmp * angleSin - yTmp * angleCos;
+
+        xOut += pivot.getX();
+        yOut += pivot.getY();
 
         return new Point(xOut, yOut);
     }

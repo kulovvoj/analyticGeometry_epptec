@@ -28,7 +28,7 @@ public class Rhomboid implements Shape {
         vec = vec.rotate(Math.PI / 2, new Point(0, 0));
         this.a = a;
         this.b = b;
-        this.c = new Point((b.getX() + vec.getX()) * length, (b.getY() + vec.getY()) * length);
+        this.c = new Point(b.getX() + vec.getX() * length, b.getY() + vec.getY() * length);
     }
 
     public Point getA() {

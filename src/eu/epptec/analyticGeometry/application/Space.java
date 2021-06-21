@@ -30,7 +30,7 @@ public class Space {
         List<String> shapeStrList = new LinkedList<>();
         shapeMap.entrySet().forEach(entry -> shapeStrList.add(entry.getKey() + ": " + entry.getValue().toString()));
 
-        StringJoiner joiner = new StringJoiner("\n");
+        StringJoiner joiner = new StringJoiner(",\n");
         shapeStrList.forEach(shapeStr -> joiner.add(shapeStr));
         outputStr += joiner.toString();
         outputStr += "}";

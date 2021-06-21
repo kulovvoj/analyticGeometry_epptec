@@ -3,6 +3,8 @@ package eu.epptec.analyticGeometry.application;
 import eu.epptec.analyticGeometry.shapes.Shape;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
+import java.util.List;
+
 public class Application {
     Space space = new Space();
 
@@ -15,19 +17,22 @@ public class Application {
     }
 
     public void moveShape(String name, double x, double y) {
-        space.getShape(name).move(x, y);
+        Shape movedShape = space.getShape(name).move(x, y);
+        space.addShape(name, movedShape);
     }
 
     public void rotateShape(String name, double angle) {
-        space.getShape(name).rotate(angle);
+        Shape rotatedShape = space.getShape(name).rotate(angle);
+        space.addShape(name, rotatedShape);
     }
 
     public void rotateShape(String name, double angle, Point pointOfRotation) {
-        space.getShape(name).rotate(angle, pointOfRotation);
+        Shape rotatedShape = space.getShape(name).rotate(angle, pointOfRotation);
+        space.addShape(name, rotatedShape);
     }
 
-    public void getIntersectingPoints(String name1, String name2) {
-        space.getShape(name1).getIntersectingPoints(space.getShape(name2));
+    public List<Point> getIntersectingPoints(String name1, String name2) {
+        return space.getShape(name1).getIntersectingPoints(space.getShape(name2));
     }
 
     @Override
