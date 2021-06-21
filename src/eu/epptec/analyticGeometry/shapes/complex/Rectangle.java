@@ -7,4 +7,9 @@ public class Rectangle extends Rhomboid {
     public Rectangle(Point a, Point b, double length) {
         super(a, b, length);
     }
+
+    @Override
+    public String toString() {
+        return "Rectangle - [" + getA().toString() + ", " + getB().toString() + ", " + getC().toString() + ", " + getD().toString() + "]";
+    }
 }

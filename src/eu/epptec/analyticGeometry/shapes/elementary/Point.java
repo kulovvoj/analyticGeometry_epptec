@@ -81,7 +81,7 @@ public class Point implements Shape {
     private List<Point> getIntersectingPointsLine(Line other) {
         List<Point> intersections = new LinkedList<>();
         List<Double> genEq = other.getGeneralEquation();
-        if (abs(genEq.get(0) * x + genEq.get(1) * y + genEq.get(2)) < EPS)
+        if (abs(genEq.get(0) * x + genEq.get(1) * y + genEq.get(2)) < EPS && other.isInBoundary(this))
             intersections.add(this);
         return intersections;
     }
@@ -92,6 +92,10 @@ public class Point implements Shape {
         if (abs(pow(x - other.getCenter().getX(), 2) + pow(y - other.getCenter().getY(), 2) - pow(other.getRadius(), 2)) < EPS)
             intersections.add(this);
         return intersections;
+    }
 
+    @Override
+    public String toString() {
+        return "Point - [" + x + ", " + y + "]";
     }
 }

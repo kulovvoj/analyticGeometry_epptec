@@ -82,4 +82,9 @@ public class Rhomboid implements Shape {
         getLines().forEach(line -> intersections.addAll(line.getIntersectingPoints(other)));
         return intersections;
     }
+
+    @Override
+    public String toString() {
+        return "Rhomboid - [" + a.toString() + ", " + b.toString() + ", " + c.toString() + ", " + getD().toString() + "]";
+    }
 }

@@ -55,13 +55,13 @@ public class Line implements Shape {
     }
 
     // Tests whether number a is in between numbers b and c
-    private boolean isInbetween (double a, double b, double c) {
-        return (b + EPS >= a && a + EPS >= c) || (c + EPS >= a && a + EPS >= b);
+    private static boolean isInbetween (double x, double y, double z) {
+        return (y + EPS >= x && x + EPS >= z) || (z + EPS >= x && x + EPS >= y);
     }
 
     // Tests whether point a is in the boundary defined by points b and c
-    private boolean isInbetween (Point a, Point b, Point c) {
-        return isInbetween(a.getX(), b.getX(), c.getX()) || isInbetween(a.getY(), c.getY(), b.getY());
+    public boolean isInBoundary(Point point) {
+        return isInbetween(point.getX(), a.getX(), b.getX()) || isInbetween(point.getY(), b.getY(), a.getY());
     }
 
     //TODO
@@ -98,7 +98,7 @@ public class Line implements Shape {
                         / denom;
 
         Point intersectionPoint = new Point(intersectionX, intersectionY);
-        if (isInbetween(intersectionPoint, a, b) && isInbetween(intersectionPoint, other.getA(), other.getB()))
+        if (this.isInBoundary(intersectionPoint) && other.isInBoundary(intersectionPoint))
             intersections.add(intersectionPoint);
 
         return intersections;
@@ -124,7 +124,7 @@ public class Line implements Shape {
         // One intersection
         if (Math.abs(genEqC * genEqC - r * r * (genEqA * genEqA + genEqB * genEqB)) < EPS) {
             Point pointTmp = new Point(x0 + other.getCenter().getX(), y0 + other.getCenter().getY());
-            if (isInbetween(pointTmp, this.a, this.b))
+            if (this.isInBoundary(pointTmp))
                 intersections.add(pointTmp);
         }
         // Two intersections
@@ -138,10 +138,10 @@ public class Line implements Shape {
             by = y0 + genEqA * mult + other.getCenter().getY();
 
             Point pointTmp = new Point(ax, ay);
-            if (isInbetween(pointTmp, this.a, this.b))
+            if (this.isInBoundary(pointTmp))
                 intersections.add(pointTmp);
             pointTmp = new Point(bx, by);
-            if (isInbetween(pointTmp, this.a, this.b))
+            if (this.isInBoundary(pointTmp))
                 intersections.add(pointTmp);
         }
         return intersections;
@@ -160,5 +160,10 @@ public class Line implements Shape {
         equationVars.add(genEqB);
         equationVars.add(genEqC);
         return equationVars;
+    }
+
+    @Override
+    public String toString() {
+        return "Line - [" + a.toString() + ", " + b.toString() + "]";
     }
 }

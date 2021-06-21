@@ -84,4 +84,9 @@ public class Circle implements Shape {
         }
         return intersections;
     }
+
+    @Override
+    public String toString() {
+        return "Circle - [" + center.toString() + ", " + radius + "]";
+    }
 }
