@@ -1,12 +1,13 @@
 package eu.epptec.analyticGeometry.shapes.basic;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
-import eu.epptec.analyticGeometry.shapes.Shape2D;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
-public class Line implements Shape2D {
+public class Line implements Shape {
     private Point a, b;
 
     public Line(Point a, Point b) {
@@ -26,9 +27,10 @@ public class Line implements Shape2D {
         return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
     }
 
+    // Calculates the unit vector of the line facing from A to B
     public Point getUnitVector() {
-        double xVec = (a.getX() - b.getX()) / this.getLength();
-        double yVec = (a.getY() - b.getY()) / this.getLength();
+        double xVec = (b.getX() - a.getX()) / this.getLength();
+        double yVec = (b.getY() - a.getY()) / this.getLength();
         return new Point(xVec, yVec);
     }
 
@@ -62,8 +64,22 @@ public class Line implements Shape2D {
         return isInbetween(a.getX(), b.getX(), c.getX()) || isInbetween(a.getY(), c.getY(), b.getY());
     }
 
-    public LinkedList<Point> getIntersectingPoints(Line other) {
-        LinkedList<Point> intersections = new LinkedList<>();
+    //TODO
+    @Override
+    public List<Point> getIntersectingPoints(Shape other) {
+        List<Point> lst = new LinkedList<>();
+        if (other instanceof Line)
+            lst.addAll(getIntersectingPointsLine((Line)other));
+        else if (other instanceof Circle)
+            lst.addAll(getIntersectingPointsCircle((Circle)other));
+        else
+            lst.addAll(other.getIntersectingPoints(this));
+        return lst;
+    }
+
+    // Calculates the intersections between a line and a line
+    private List<Point> getIntersectingPointsLine(Line other) {
+        List<Point> intersections = new LinkedList<>();
 
         double denom = (a.getX() - b.getX()) * (other.getA().getY() - other.getB().getY())
                 - (a.getY() - b.getY()) * (other.getA().getX() - other.getB().getX());
@@ -89,36 +105,37 @@ public class Line implements Shape2D {
     }
 
     // Calculates the intersections between this line and a circle
-    public LinkedList<Point> getIntersectingPoints(Circle other) {
-        LinkedList<Point> intersections = new LinkedList<>();
+    // We move the circle's center to (0, 0) for easier calculation
+    private List<Point> getIntersectingPointsCircle(Circle other) {
+        List<Point> intersections = new LinkedList<>();
 
         double r = other.getRadius();
-        double constA, constB, constC, m;
+        double genEqA, genEqB, genEqC;
 
-        // Calculate the constants of a * x + b * y + c = 0
-        m = (this.b.getY()- this.a.getY()) / (this.b.getX() - this.a.getX());
-        constA = m;
-        constB = -1;
-        constC = -m * (this.a.getX() - other.getCenter().getX()) + this.a.getY() - other.getCenter().getY();
+        // Get the general equation of moved line
+        List<Double> generalEquation = this.move(-other.getCenter().getX(), -other.getCenter().getY()).getGeneralEquation();
+        genEqA = generalEquation.get(0);
+        genEqB = generalEquation.get(1);
+        genEqC = generalEquation.get(2);
 
-        double x0 = -constA * constC / (constA * constA + constB * constB);
-        double y0 = -constB * constC / (constA * constA + constB * constB);
+        double x0 = -genEqA * genEqC / (genEqA * genEqA + genEqB * genEqB);
+        double y0 = -genEqB * genEqC / (genEqA * genEqA + genEqB * genEqB);
 
         // One intersection
-        if (Math.abs(constC * constC - r * r * (constA * constA + constB * constB)) < EPS) {
+        if (Math.abs(genEqC * genEqC - r * r * (genEqA * genEqA + genEqB * genEqB)) < EPS) {
             Point pointTmp = new Point(x0 + other.getCenter().getX(), y0 + other.getCenter().getY());
             if (isInbetween(pointTmp, this.a, this.b))
                 intersections.add(pointTmp);
         }
         // Two intersections
-        else if (constC * constC < r * r * (constA * constA + constB * constB) + EPS) {
-            double d = r  * r - constC * constC / (constA * constA + constB * constB);
-            double mult = Math.sqrt(d / (constA * constA + constB * constB));
+        else if (genEqC * genEqC < r * r * (genEqA * genEqA + genEqB * genEqB) + EPS) {
+            double d = r  * r - genEqC * genEqC / (genEqA * genEqA + genEqB * genEqB);
+            double mult = Math.sqrt(d / (genEqA * genEqA + genEqB * genEqB));
             double ax, ay, bx, by;
-            ax = x0 + constB * mult + other.getCenter().getX();
-            bx = x0 - constB * mult + other.getCenter().getY();
-            ay = y0 - constA * mult + other.getCenter().getX();
-            by = y0 + constA * mult + other.getCenter().getY();
+            ax = x0 + genEqB * mult + other.getCenter().getX();
+            bx = x0 - genEqB * mult + other.getCenter().getY();
+            ay = y0 - genEqA * mult + other.getCenter().getX();
+            by = y0 + genEqA * mult + other.getCenter().getY();
 
             Point pointTmp = new Point(ax, ay);
             if (isInbetween(pointTmp, this.a, this.b))
@@ -130,21 +147,18 @@ public class Line implements Shape2D {
         return intersections;
     }
 
-    //TODO
-    @Override
-    public LinkedList<Point> getIntersectingPoints(Shape2D other) {
-        LinkedList<Point> lst = new LinkedList<Point>();
-        if (other.getClass() == Line.class)
-            lst.addAll(getIntersectingPoints((Line)other));
-        else if (other.getClass() == Circle.class)
-            lst.addAll(getIntersectingPoints((Circle)other));
-        else
-            lst.addAll(other.getIntersectingPoints(this));
-        return null;
-    }
+    public List<Double> getGeneralEquation() {
+        double genEqA, genEqB, genEqC, m;
 
-    @Override
-    public double getIntersectingArea(Shape2D other) {
-        return 0;
+        // Calculate the genEqAnts of a * x + b * y + c = 0
+        m = (this.b.getY()- this.a.getY()) / (this.b.getX() - this.a.getX());
+        genEqA = m;
+        genEqB = -1;
+        genEqC = -m * (this.a.getX()) + this.a.getY();
+        List<Double> equationVars = new ArrayList<>();
+        equationVars.add(genEqA);
+        equationVars.add(genEqB);
+        equationVars.add(genEqC);
+        return equationVars;
     }
 }

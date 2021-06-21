@@ -1,12 +1,13 @@
 package eu.epptec.analyticGeometry.shapes.complex;
 
-import eu.epptec.analyticGeometry.shapes.Shape2D;
+import eu.epptec.analyticGeometry.shapes.Shape;
 import eu.epptec.analyticGeometry.shapes.basic.Line;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
 import java.util.LinkedList;
+import java.util.List;
 
-public class Rhomboid implements Shape2D {
+public class Rhomboid implements Shape {
 
     // Points of the rhomboid
     //  a ------ b
@@ -46,6 +47,15 @@ public class Rhomboid implements Shape2D {
         return c.move(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
+    public List<Line> getLines() {
+        List<Line> lines = new LinkedList<>();
+        lines.add(new Line(a, b));
+        lines.add(new Line(b, c));
+        lines.add(new Line(c, getD()));
+        lines.add(new Line(getD(), a));
+        return lines;
+    }
+
     @Override
     public Point getCenter() {
         return (new Line(a, c)).getCenter();
@@ -66,16 +76,10 @@ public class Rhomboid implements Shape2D {
         return new Rhomboid(a.rotate(angle, pivot), b.rotate(angle, pivot), c.rotate(angle, pivot));
     }
 
-    //TODO
     @Override
-    public LinkedList<Point> getIntersectingPoints(Shape2D other) {
-        return null;
+    public List<Point> getIntersectingPoints(Shape other) {
+        List<Point> intersections = new LinkedList<>();
+        getLines().forEach(line -> intersections.addAll(line.getIntersectingPoints(other)));
+        return intersections;
     }
-
-    //TODO
-    @Override
-    public double getIntersectingArea(Shape2D other) {
-        return 0;
-    }
-
 }
