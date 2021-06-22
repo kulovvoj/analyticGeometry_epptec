@@ -1,8 +1,10 @@
 package eu.epptec.analyticGeometry.application;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
+import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
+import java.util.List;
 import java.util.Set;
 
 public class Application {
@@ -31,8 +33,8 @@ public class Application {
         space.addShape(name, rotatedShape);
     }
 
-    public Set<Point> getIntersectingPoints(String name1, String name2) {
-        return space.getShape(name1).getIntersectingPoints(space.getShape(name2));
+    public Set<BasicShape> getIntersections(String name1, String name2) {
+        return space.getShape(name1).getIntersections(space.getShape(name2));
     }
 
     @Override

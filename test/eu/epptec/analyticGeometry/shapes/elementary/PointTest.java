@@ -1,10 +1,13 @@
 package eu.epptec.analyticGeometry.shapes.elementary;
 
+import eu.epptec.analyticGeometry.shapes.Shape;
 import eu.epptec.analyticGeometry.shapes.complex.Square;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,8 +35,8 @@ class PointTest {
     }
 
     @Test
-    void getIntersectingPoints() {
-        Set<Point> testSet = new HashSet<>();
+    void getIntersections() {
+        Set<BasicShape> testList = new TreeSet<>();
         Line line = new Line(new Point(0, 0), new Point(2,4));
         Circle circle = new Circle(new Point(0, 0), 3);
         Square square = new Square(new Point(0, 0), new Point(2, 4));
@@ -44,40 +47,40 @@ class PointTest {
         Point point5 = new Point(0, 3);
         Point point6 = new Point(Math.sqrt(9.0 / 2.0), Math.sqrt(9.0 / 2.0));
 
-        testSet.add(point1);
-        assertEquals(point1.getIntersectingPoints(line), testSet);
+        testList.add(point1);
+        assertEquals(point1.getIntersections(line), testList);
 
-        testSet.clear();
-        testSet.add(point2);
-        assertEquals(point2.getIntersectingPoints(line), testSet);
+        testList.clear();
+        testList.add(point2);
+        assertEquals(point2.getIntersections(line), testList);
 
-        testSet.clear();
-        assertEquals(point3.getIntersectingPoints(line), testSet);
+        testList.clear();
+        assertEquals(point3.getIntersections(line), testList);
 
-        testSet.clear();
-        testSet.add(point1);
-        assertEquals(point1.getIntersectingPoints(square), testSet);
+        testList.clear();
+        testList.add(point1);
+        assertEquals(point1.getIntersections(square), testList);
 
-        testSet.clear();
-        testSet.add(point2);
-        assertEquals(point2.getIntersectingPoints(square), testSet);
+        testList.clear();
+        testList.add(point2);
+        assertEquals(point2.getIntersections(square), testList);
 
-        testSet.clear();
-        assertEquals(point3.getIntersectingPoints(square), testSet);
+        testList.clear();
+        assertEquals(point3.getIntersections(square), testList);
 
-        testSet.clear();
-        testSet.add(point4);
-        assertEquals(point4.getIntersectingPoints(square), testSet);
+        testList.clear();
+        testList.add(point4);
+        assertEquals(point4.getIntersections(square), testList);
 
-        testSet.clear();
-        assertEquals(point1.getIntersectingPoints(circle), testSet);
+        testList.clear();
+        assertEquals(point1.getIntersections(circle), testList);
 
-        testSet.clear();
-        testSet.add(point5);
-        assertEquals(point5.getIntersectingPoints(circle), testSet);
+        testList.clear();
+        testList.add(point5);
+        assertEquals(point5.getIntersections(circle), testList);
 
-        testSet.clear();
-        testSet.add(point6);
-        assertEquals(point6.getIntersectingPoints(circle), testSet);
+        testList.clear();
+        testList.add(point6);
+        assertEquals(point6.getIntersections(circle), testList);
     }
 }

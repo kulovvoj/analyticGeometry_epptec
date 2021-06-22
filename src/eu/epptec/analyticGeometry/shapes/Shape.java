@@ -1,7 +1,9 @@
 package eu.epptec.analyticGeometry.shapes;
 
+import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Shape {
@@ -10,5 +12,5 @@ public interface Shape {
     public Shape move(double x, double y);
     public Shape rotate(double angle);
     public Shape rotate(double angle, Point pivot);
-    public Set<Point> getIntersectingPoints(Shape other);
+    public Set<BasicShape> getIntersections(Shape other);
 }

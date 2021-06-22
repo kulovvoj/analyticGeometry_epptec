@@ -11,15 +11,15 @@ public class Main {
         app.addShape("point", new Point(3, 0));
         app.addShape("square1", new Square(new Point(0, 0), new Point(0, 3)));
         app.addShape("square2", new Square(new Point(1, 1), new Point(1, 4)));
-        System.out.println(app.getIntersectingPoints("circle", "point"));
-        System.out.println(app.getIntersectingPoints("square1", "square2"));*/
+        System.out.println(app.getIntersections("circle", "point"));
+        System.out.println(app.getIntersections("square1", "square2"));*/
         app.addShape("line1", new Line(new Point(-1, 1), new Point(1, -1)));
         app.addShape("line2", new Line(new Point(-1, -1), new Point(-2, -2)));
         app.addShape("square1", new Square(new Point(0, 0), new Point(0, 3)));
         app.addShape("square2", new Square(new Point(1, 1), new Point(1, 4)));
         System.out.println(app);
-        System.out.println(app.getIntersectingPoints("line1", "line2"));
-        System.out.println(app.getIntersectingPoints("square1", "square2"));
+        System.out.println(app.getIntersections("line1", "line2"));
+        System.out.println(app.getIntersections("square1", "square2"));
         app.moveShape("line1", 2, 2);
 
     }

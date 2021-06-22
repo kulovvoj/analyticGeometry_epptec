@@ -2,12 +2,14 @@ package eu.epptec.analyticGeometry.shapes.elementary;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
 
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static java.lang.Math.*;
 
-public class Circle implements Shape {
+public class Circle implements BasicShape {
     Point center;
     double radius;
 
@@ -40,33 +42,32 @@ public class Circle implements Shape {
         return new Circle(center.rotate(angle, pivot), radius);
     }
 
-    public Set<Point> getIntersectingPoints(Line other) {
-        return other.getIntersectingPoints(this);
-    }
-
     @Override
-    public Set<Point> getIntersectingPoints(Shape other) {
-        Set<Point> lst = new HashSet<>();
+    public Set<BasicShape> getIntersections(Shape other) {
+        Set<BasicShape> lst = new TreeSet<BasicShape>();
         if (other instanceof Circle)
-            lst.addAll(getIntersectingPointsCircle((Circle)other));
+            lst.addAll(getIntersectionsCircle((Circle)other));
         else
-            lst.addAll(other.getIntersectingPoints(this));
+            lst.addAll(other.getIntersections(this));
         return lst;
     }
 
-    private Set<Point> getIntersectingPointsCircle(Circle other) {
-        // Make sure that this circle is larger than the one passed as argument
+    private Set<BasicShape> getIntersectionsCircle(Circle other) {
+        // Make sure that this circle is larger than the one passed as argument for easier computation
         if (other.getRadius() > radius)
-            other.getIntersectingPoints(this);
+            other.getIntersections(this);
 
-        Set<Point> intersections = new HashSet<>();
+        Set<BasicShape> intersections = new TreeSet<>();
         Line centersLine = new Line(center, other.getCenter());
         double centersDistance = centersLine.getLength();
 
+        // If the circles are the same, the whole circle intersects
+        if (this.equals(other)) {
+            intersections.add(this);
         // If the two circles simply touch, there's only one intersection at the line joining the centers
-        if (abs(centersDistance - radius - other.getRadius()) < EPS ||
+        } else if (abs(centersDistance - radius - other.getRadius()) < EPS ||
                 abs(radius - other.getRadius() - centersDistance) < EPS) {
-            intersections.addAll(centersLine.getIntersectingPoints(this));
+            intersections.addAll(centersLine.getIntersections(this));
         // There's two intersections if the distance between the centers is less than the sum of radii and
         // one circle is not inside the other
         } else if (centersDistance < radius + other.getRadius() + EPS &&
@@ -87,5 +88,34 @@ public class Circle implements Shape {
     @Override
     public String toString() {
         return "Circle - [" + center.toString() + ", " + radius + "]";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this)
+            return true;
+        if (!(other instanceof Point))
+            return false;
+        Circle otherCircle = (Circle)other;
+        long pointCmp = center.compareTo(otherCircle.getCenter());
+        long thisRadiusInt = round(radius * compPrec);
+        long otherRadiusInt = round(otherCircle.getRadius() * compPrec);
+        return pointCmp == 0 && thisRadiusInt == otherRadiusInt;
+    }
+
+    @Override
+    public int compareTo(BasicShape other) {
+        if (other instanceof Point || other instanceof Line)
+            return 1;
+        Circle otherCircle = (Circle)other;
+        long pointCmp = center.compareTo(otherCircle.getCenter());
+
+        long thisRadiusInt = round(radius * compPrec);
+        long otherRadiusInt = round(otherCircle.getRadius() * compPrec);
+        if (pointCmp < 0 || (pointCmp == 0 && thisRadiusInt < otherRadiusInt))
+            return -1;
+        else if (pointCmp > 0 || (pointCmp == 0 && thisRadiusInt > otherRadiusInt))
+            return 1;
+        return 0;
     }
 }

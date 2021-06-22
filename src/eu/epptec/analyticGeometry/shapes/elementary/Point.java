@@ -3,12 +3,11 @@ package eu.epptec.analyticGeometry.shapes.elementary;
 import eu.epptec.analyticGeometry.shapes.Shape;
 
 import java.util.*;
-import java.util.Set;
+import java.util.List;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.pow;
+import static java.lang.Math.*;
 
-public class Point implements Shape {
+public class Point implements BasicShape {
     private double x, y;
 
     public Point(double x, double y) {
@@ -25,8 +24,8 @@ public class Point implements Shape {
     }
 
     @Override
-    public Point move(double offsetX, double offsetY) {
-        return new Point(x + offsetX, y + offsetY);
+    public Point move(double offListX, double offListY) {
+        return new Point(x + offListX, y + offListY);
     }
 
     @Override
@@ -57,30 +56,30 @@ public class Point implements Shape {
     }
 
     @Override
-    public Set<Point> getIntersectingPoints(Shape other) {
-        Set<Point> intersections = new HashSet<>();
+    public Set<BasicShape> getIntersections(Shape other) {
+        Set<BasicShape> intersections = new TreeSet<>();
         if (other instanceof Point)
-            intersections.addAll(getIntersectingPointsPoint((Point)other));
+            intersections.addAll(getIntersectionsPoint((Point)other));
         else if (other instanceof Line)
-            intersections.addAll(getIntersectingPointsLine((Line)other));
+            intersections.addAll(getIntersectionsLine((Line)other));
         else if (other instanceof Circle)
-            intersections.addAll(getIntersectingPointsCircle((Circle)other));
+            intersections.addAll(getIntersectionsCircle((Circle)other));
         else
-            intersections.addAll(other.getIntersectingPoints(this));
+            intersections.addAll(other.getIntersections(this));
         return intersections;
     }
 
     // If the points have the same coordinates, they intersect
-    private Set<Point> getIntersectingPointsPoint(Point other) {
-        Set<Point> intersections = new HashSet<>();
+    private Set<BasicShape> getIntersectionsPoint(Point other) {
+        Set<BasicShape> intersections = new TreeSet<>();
         if (abs(x - other.getX()) < EPS && abs(y - other.getY()) < EPS)
             intersections.add(this);
         return intersections;
     }
 
     // If the point lies on the line, they intersect
-    private Set<Point> getIntersectingPointsLine(Line other) {
-        Set<Point> intersections = new HashSet<>();
+    private Set<BasicShape> getIntersectionsLine(Line other) {
+        Set<BasicShape> intersections = new TreeSet<>();
         List<Double> genEq = other.getGeneralEquation();
         if (abs(genEq.get(0) * x + genEq.get(1) * y + genEq.get(2)) < EPS && other.isInBoundary(this))
             intersections.add(this);
@@ -88,8 +87,8 @@ public class Point implements Shape {
     }
 
     // If the point lies on the circle, they intersect
-    private Set<Point> getIntersectingPointsCircle(Circle other) {
-        Set<Point> intersections = new HashSet<>();
+    private Set<BasicShape> getIntersectionsCircle(Circle other) {
+        Set<BasicShape> intersections = new TreeSet<>();
         if (abs(pow(x - other.getCenter().getX(), 2) + pow(y - other.getCenter().getY(), 2) - pow(other.getRadius(), 2)) < EPS)
             intersections.add(this);
         return intersections;
@@ -107,6 +106,24 @@ public class Point implements Shape {
         if (!(other instanceof Point))
             return false;
         Point otherPoint = (Point)other;
-        return abs(x - otherPoint.getX()) < EPS && abs(y - otherPoint.getY()) < EPS;
+        return round(x * compPrec) == round(otherPoint.getX() * compPrec) &&
+                round(y * compPrec) == round(otherPoint.getY() * compPrec);
+        //return abs(x - otherPoint.getX()) < EPS && abs(y - otherPoint.getY()) < EPS;
+    }
+
+    @Override
+    public int compareTo(BasicShape other) {
+        if (other instanceof Circle || other instanceof Line)
+            return -1;
+        Point otherPoint = (Point)other;
+        long thisXInt = round(x * compPrec);
+        long thisYInt = round(y * compPrec);
+        long otherXInt = round(otherPoint.getX() * compPrec);
+        long otherYInt = round(otherPoint.getY() * compPrec);
+        if (thisXInt < otherXInt || (thisXInt == otherXInt && thisYInt < otherYInt))
+            return -1;
+        else if (thisXInt > otherXInt || (thisXInt == otherXInt && thisYInt > otherYInt))
+            return 1;
+        return 0;
     }
 }

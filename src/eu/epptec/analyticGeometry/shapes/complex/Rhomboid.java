@@ -1,11 +1,14 @@
 package eu.epptec.analyticGeometry.shapes.complex;
 
 import eu.epptec.analyticGeometry.shapes.Shape;
+import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Line;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Rhomboid implements Shape {
 
@@ -13,7 +16,7 @@ public class Rhomboid implements Shape {
     //  a ------ b
     //  |        |
     //  d ------ c
-    // Point d can be calculated
+    // Point d can be calculated when all the other points are known
 
     private Point a, b, c;
 
@@ -47,8 +50,8 @@ public class Rhomboid implements Shape {
         return c.move(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    public Set<Line> getLines() {
-        Set<Line> lines = new HashSet<>();
+    public List<Line> getLines() {
+        List<Line> lines = new LinkedList<>();
         lines.add(new Line(a, b));
         lines.add(new Line(b, c));
         lines.add(new Line(c, getD()));
@@ -77,9 +80,9 @@ public class Rhomboid implements Shape {
     }
 
     @Override
-    public Set<Point> getIntersectingPoints(Shape other) {
-        Set<Point> intersections = new HashSet<>();
-        getLines().forEach(line -> intersections.addAll(line.getIntersectingPoints(other)));
+    public Set<BasicShape> getIntersections(Shape other) {
+        Set<BasicShape> intersections = new TreeSet<>();
+        getLines().forEach(line -> intersections.addAll(line.getIntersections(other)));
         return intersections;
     }
 
