@@ -66,13 +66,11 @@ public class Line implements BasicShape {
         return (y + EPS > x && x + EPS > z) || (z + EPS > x && x + EPS > y);
     }
 
-    // Tests whether point a is in the boundary defined by the line
+    // Tests whether point a is in the boundary box defined by the line's points
     public boolean isInBoundary(Point point) {
-        boolean out = isInbetween(point.getX(), a.getX(), b.getX()) && isInbetween(point.getY(), b.getY(), a.getY());
-        return out;
+        return isInbetween(point.getX(), a.getX(), b.getX()) && isInbetween(point.getY(), b.getY(), a.getY());
     }
 
-    //TODO
     @Override
     public Set<BasicShape> getIntersections(Shape other) {
         Set<BasicShape> lst = new TreeSet<>();
@@ -89,60 +87,67 @@ public class Line implements BasicShape {
     private Set<BasicShape> getIntersectionsLine(Line other) {
         Set<BasicShape> intersections = new TreeSet<>();
 
+        // If any of the two lines is of length 0, we convert it to a point and check if that lies on the other line
+        if (this.getA().equals(this.getB())) {
+            intersections.addAll(this.getA().getIntersections(other));
+        }
+        else if (other.getA().equals(other.getB()))
+            intersections.addAll(other.getA().getIntersections(this));
         // If the two lines are the same, we can just add it in the intersections
-        if (this.equals(other)) {
+        else if (this.equals(other))
             intersections.add(this);
-            return intersections;
-        }
+        // Otherwise we calculate
+        else {
+            double denom = (a.getX() - b.getX()) * (other.getA().getY() - other.getB().getY())
+                    - (a.getY() - b.getY()) * (other.getA().getX() - other.getB().getX());
 
-        double denom = (a.getX() - b.getX()) * (other.getA().getY() - other.getB().getY())
-                - (a.getY() - b.getY()) * (other.getA().getX() - other.getB().getX());
+            // Testing whether the lines are parallel
+            if (abs(denom) < EPS) {
+                List<Double> genEqThis = this.getGeneralEquation();
+                List<Double> genEqOther = other.getGeneralEquation();
+                // And whether they are coincidental
+                /*if ((genEqThis.get(0) - genEqOther.get(0)) < EPS &&
+                        (genEqThis.get(1) - genEqOther.get(1)) < EPS &&
+                        (genEqThis.get(2) - genEqOther.get(2)) < EPS) {*/
+                if (this.getA().getIntersections(other).isEmpty()) {
+                    // There are 6 cases of coincidental line segments, that intersect each other
+                    if (this.isInBoundary(other.getA()) && this.isInBoundary(other.getB()))
+                        intersections.add(other);
+                    else if (this.isInBoundary(other.getA()) && other.isInBoundary(this.getA()))
+                        intersections.add(new Line(other.getA(), this.getA()));
+                    else if (this.isInBoundary(other.getA()) && other.isInBoundary(this.getB()))
+                        intersections.add(new Line(other.getA(), this.getB()));
+                    else if (this.isInBoundary(other.getB()) && other.isInBoundary(this.getA()))
+                        intersections.add(new Line(other.getB(), this.getA()));
+                    else if (this.isInBoundary(other.getB()) && other.isInBoundary(this.getB()))
+                        intersections.add(new Line(other.getB(), this.getB()));
+                    else if (other.isInBoundary(this.getA()) && other.isInBoundary(this.getB()))
+                        intersections.add(this);
+                }
 
-        // Testing whether the lines are parallel
-        if (abs(denom) < EPS) {
-            List<Double> genEqThis = this.getGeneralEquation();
-            List<Double> genEqOther = other.getGeneralEquation();
-            // And whether they are coincidental
-            if ((genEqThis.get(0) - genEqOther.get(0)) < EPS &&
-                    (genEqThis.get(1) - genEqOther.get(1)) < EPS &&
-                    (genEqThis.get(2) - genEqOther.get(2)) < EPS) {
-                // There are 6 cases of coincidental line segments
-                if (this.isInBoundary(other.getA()) && this.isInBoundary(other.getB()))
-                    intersections.add(other);
-                else if (this.isInBoundary(other.getA()) && other.isInBoundary(this.getA()))
-                    intersections.add(new Line(other.getA(), this.getA()));
-                else if (this.isInBoundary(other.getA()) && other.isInBoundary(this.getB()))
-                    intersections.add(new Line(other.getA(), this.getB()));
-                else if (this.isInBoundary(other.getB()) && other.isInBoundary(this.getA()))
-                    intersections.add(new Line(other.getB(), this.getA()));
-                else if (this.isInBoundary(other.getB()) && other.isInBoundary(this.getB()))
-                    intersections.add(new Line(other.getB(), this.getB()));
-                else if (other.isInBoundary(this.getA()) && other.isInBoundary(this.getB()))
-                    intersections.add(this);
+                // If the lines are not parallel, we can calculate their intersection point
+            } else {
+                double tmp1 = a.getX() * b.getY() - a.getY() * b.getX();
+
+                double tmp2 = other.getA().getX() * other.getB().getY()
+                        - other.getA().getY() * other.getB().getX();
+
+                double intersectionX =
+                        (tmp1 * (other.getA().getX() - other.getB().getX()) - (a.getX() - b.getX()) * tmp2)
+                                / denom;
+
+                double intersectionY =
+                        (tmp1 * (other.getA().getY() - other.getB().getY()) - (a.getY() - b.getY()) * tmp2)
+                                / denom;
+
+                Point intersectionPoint = new Point(intersectionX, intersectionY);
+
+                // We add the point only if it lies on both of the line segments
+                if (this.isInBoundary(intersectionPoint) && other.isInBoundary(intersectionPoint)) {
+                    intersections.add(intersectionPoint);
+                }
             }
-        // If the lines are not parallel, we can calculate their intersection point
-        } else {
-            double tmp1 = a.getX() * b.getY() - a.getY() * b.getX();
-
-            double tmp2 = other.getA().getX() * other.getB().getY()
-                    - other.getA().getY() * other.getB().getX();
-
-            double intersectionX =
-                    (tmp1 * (other.getA().getX() - other.getB().getX()) - (a.getX() - b.getX()) * tmp2)
-                            / denom;
-
-            double intersectionY =
-                    (tmp1 * (other.getA().getY() - other.getB().getY()) - (a.getY() - b.getY()) * tmp2)
-                            / denom;
-
-            Point intersectionPoint = new Point(intersectionX, intersectionY);
-
-            // We add the point only if it lies on both of the line segments
-            if (this.isInBoundary(intersectionPoint) && other.isInBoundary(intersectionPoint)) {
-                intersections.add(intersectionPoint);
-            }
         }
-
         return intersections;
     }
 
@@ -192,6 +197,10 @@ public class Line implements BasicShape {
         return intersections;
     }*/
 
+    private int sgnStar (double x) {
+        return x < -EPS ? -1 : 1;
+    }
+
     // Line - circle intersections according to https://mathworld.wolfram.com/Circle-LineIntersection.html
     private Set<BasicShape> getIntersectionsCircle(Circle other) {
         // If the line is of length 0
@@ -199,21 +208,24 @@ public class Line implements BasicShape {
             return a.getIntersections(other);
 
         Set<BasicShape> intersections = new TreeSet<>();
-        double dx = this.b.getX() - this.a.getX() - other.center.getX();
-        double dy = this.b.getY() - this.a.getY() - other.center.getY();
-        double dr = this.getLength();
-        double D = a.getX() * b.getY() + a.getY() * b.getX();
+        // We will calculate the intersection with the circle's center moved to origin point (0, 0),
+        // thus we move the line segment as well
+        Line movedLine = this.move(-other.center.getX(), -other.center.getY());
+
+        double dx = movedLine.getB().getX() - movedLine.getA().getX();
+        double dy = movedLine.getB().getY() - movedLine.getA().getY();
+        double dr = movedLine.getLength();
+        double D = movedLine.getA().getX() * movedLine.getB().getY() - movedLine.getA().getY() * movedLine.getB().getX();
         double disc = pow(other.radius, 2) * pow(dr, 2) - pow(D, 2);
-        System.out.println(disc);
         if (disc > -EPS) {
-            double x = (D * dy + signum(dy) * dx * sqrt(disc)) / pow(dr, 2) + other.center.getX();
+            double x = (D * dy + sgnStar(dy) * dx * sqrt(disc)) / pow(dr, 2) + other.center.getX();
             double y = (D * dx + abs(dy) * sqrt(disc)) / pow(dr, 2) + other.center.getY();
             Point pointTmp = new Point(x, y);
             if (this.isInBoundary(pointTmp))
                 intersections.add(pointTmp);
         }
         if (disc > EPS) {
-            double x = (D * dy - signum(dy) * dx * sqrt(disc)) / pow(dr, 2) + other.center.getX();
+            double x = (D * dy - sgnStar(dy) * dx * sqrt(disc)) / pow(dr, 2) + other.center.getX();
             double y = (D * dx - abs(dy) * sqrt(disc)) / pow(dr, 2) + other.center.getY();
             Point pointTmp = new Point(x, y);
             if (this.isInBoundary(pointTmp))
@@ -223,18 +235,27 @@ public class Line implements BasicShape {
         return intersections;
     }
 
+    // Calculates the line equation "a * x + b * y + c = 0"
     public List<Double> getGeneralEquation() {
         double genEqA, genEqB, genEqC, m;
 
-        // Calculate the genEqAnts of a * x + b * y + c = 0
-        m = (this.b.getY()- this.a.getY()) / (this.b.getX() - this.a.getX());
-        genEqA = m;
-        genEqB = -1;
-        genEqC = -m * (this.a.getX()) + this.a.getY();
         List<Double> equationVars = new ArrayList<>();
-        equationVars.add(genEqA);
-        equationVars.add(genEqB);
-        equationVars.add(genEqC);
+
+        // If the line is vertical
+        if (this.a.getX() == this.b.getX()) {
+            equationVars.add(1d);
+            equationVars.add(0d);
+            equationVars.add(-this.a.getX());
+        // Else we can calculate the general equation the normal way
+        } else {
+            m = (this.b.getY() - this.a.getY()) / (this.b.getX() - this.a.getX());
+            genEqA = m;
+            genEqB = -1;
+            genEqC = -m * (this.a.getX()) + this.a.getY();
+            equationVars.add(genEqA);
+            equationVars.add(genEqB);
+            equationVars.add(genEqC);
+        }
         return equationVars;
     }
 

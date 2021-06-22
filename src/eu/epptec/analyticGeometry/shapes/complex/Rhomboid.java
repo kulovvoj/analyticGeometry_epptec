@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Rhomboid implements Shape {
 
@@ -83,6 +84,11 @@ public class Rhomboid implements Shape {
     public Set<BasicShape> getIntersections(Shape other) {
         Set<BasicShape> intersections = new TreeSet<>();
         getLines().forEach(line -> intersections.addAll(line.getIntersections(other)));
+
+        // Gets rid of false intersection points, if the line is coincidental with one side of the rhomboid
+        if (intersections.stream().map(basicShape -> basicShape instanceof Line).reduce(false, (acc, elem) -> acc || elem))
+            return intersections.stream().filter(basicShape -> !(basicShape instanceof Point)).collect(Collectors.toSet());
+
         return intersections;
     }
 

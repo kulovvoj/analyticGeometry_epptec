@@ -47,6 +47,7 @@ class PointTest {
         Point point5 = new Point(0, 3);
         Point point6 = new Point(Math.sqrt(9.0 / 2.0), Math.sqrt(9.0 / 2.0));
 
+        // Try intersections with a line
         testList.add(point1);
         assertEquals(point1.getIntersections(line), testList);
 
@@ -57,6 +58,7 @@ class PointTest {
         testList.clear();
         assertEquals(point3.getIntersections(line), testList);
 
+        // Intersections with a square
         testList.clear();
         testList.add(point1);
         assertEquals(point1.getIntersections(square), testList);
@@ -72,6 +74,7 @@ class PointTest {
         testList.add(point4);
         assertEquals(point4.getIntersections(square), testList);
 
+        // Intersections with a circle
         testList.clear();
         assertEquals(point1.getIntersections(circle), testList);
 

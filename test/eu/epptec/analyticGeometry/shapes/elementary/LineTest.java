@@ -62,72 +62,81 @@ class LineTest {
         Line line1 = new Line(new Point(4, 3), new Point(6, 7));
         Line line2 = new Line(new Point(6, 6), new Point(4, 4));
         Line line3 = new Line(new Point(0, 0), new Point(0, 0));
-        Line line4 = new Line(new Point(0, 0), new Point(0,4));
-        Line line5 = new Line(new Point(0, -4), new Point(0,4));
-        Line line6 = new Line(new Point(Math.sqrt(9.0 / 2.0), -6), new Point(Math.sqrt(9.0 / 2.0),6));
+        Line line4 = new Line(new Point(0, 0), new Point(0, 4));
+        Line line5 = new Line(new Point(0, -4), new Point(0, 4));
+        Line line6 = new Line(new Point(Math.sqrt(9.0 / 2.0), -6), new Point(Math.sqrt(9.0 / 2.0), 6));
         Line line7 = new Line(new Point(3, 3), new Point(3, -3));
+        Line line8 = new Line(new Point(1, 1), new Point(-1, -1));
+        Line line9 = new Line(new Point(1, 1), new Point(-1, 1));
+        Line line10 = new Line(new Point(10, 1), new Point(-10, 1));
+        Line line11 = new Line(new Point(-2, -1), new Point(1, 2));
 
         Circle circle = new Circle(new Point(0, 0), 3);
         Square square = new Square(new Point(0, 0), new Point(0, 4));
-        Point point1 = new Point(0, 0);
-        Point point2 = new Point(1, 2);
-        Point point3 = new Point(2, 5);
-        Point point4 = new Point(-2, 6);
-        Point point5 = new Point(0, 3);
-        Point point6 = new Point(Math.sqrt(9.0 / 2.0), Math.sqrt(9.0 / 2.0));
 
         // Test intersections between lines
         testList.add(new Point(5, 5));
-        //assertTrue(line1.getIntersections(line2).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
-        //assertTrue(line2.getIntersections(line1).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
         assertEquals(line1.getIntersections(line2), testList);
         assertEquals(line2.getIntersections(line1), testList);
+
         testList.clear();
         testList.add(line1);
-        //assertTrue(line1.getIntersections(line1).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
         assertEquals(line1.getIntersections(line1), testList);
+
+        testList.clear();
+        testList.add(new Point(0, 0));
+        assertEquals(line3.getIntersections(line4), testList);
+        assertEquals(line4.getIntersections(line3), testList);
+        assertEquals(line3.getIntersections(line3), testList);
 
         // Test intersections with circles
         testList.clear();
         testList.add(new Point(0, 3));
-        //assertTrue(line4.getIntersections(circle).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
         assertEquals(line4.getIntersections(circle), testList);
 
         testList.clear();
-        //assertTrue(line1.getIntersections(circle).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
         assertEquals(line1.getIntersections(circle), testList);
 
         testList.clear();
         testList.add(new Point(0, 3));
         testList.add(new Point(0, -3));
-        //assertTrue(line5.getIntersections(circle).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
         assertEquals(line5.getIntersections(circle), testList);
 
         testList.clear();
         testList.add(new Point(Math.sqrt(9.0 / 2.0), -Math.sqrt(9.0 / 2.0)));
         testList.add(new Point(Math.sqrt(9.0 / 2.0), Math.sqrt(9.0 / 2.0)));
-        System.out.println(line6.getIntersections(circle));
-        //assertTrue(line6.getIntersections(circle).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
-        assertEquals(line6.getIntersections(circle), testList);
-
-        testList.clear();
-        testList.add(new Point(Math.sqrt(9.0 / 2.0), -Math.sqrt(9.0 / 2.0)));
-        testList.add(new Point(Math.sqrt(9.0 / 2.0), Math.sqrt(9.0 / 2.0)));
-        //assertTrue(line6.getIntersections(circle).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
         assertEquals(line6.getIntersections(circle), testList);
 
         testList.clear();
         testList.add(new Point(3, 0));
-        //assertTrue(line6.getIntersections(circle).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
-        assertEquals(line6.getIntersections(circle), testList);
+        assertEquals(line7.getIntersections(circle), testList);
 
         // Test intersections with a square
         testList.clear();
-        testList.add(new Point(3, 0));
-        //assertTrue(line6.getIntersections(square).stream().map(elem -> testList.contains(elem)).reduce(true, (acc, elem) -> acc && elem));
-        assertEquals(line6.getIntersections(square), testList);
+        testList.add(new Point(0, 0));
+        assertEquals(line8.getIntersections(square), testList);
 
+        testList.clear();
+        testList.add(new Point(0, 0));
+        assertEquals(line3.getIntersections(square), testList);
 
+        testList.clear();
+        testList.add(line4);
+        assertEquals(line4.getIntersections(square), testList);
+
+        testList.clear();
+        testList.add(new Point(0, 1));
+        assertEquals(line9.getIntersections(square), testList);
+
+        testList.clear();
+        testList.add(new Point(-4, 1));
+        testList.add(new Point(0, 1));
+        assertEquals(line10.getIntersections(square), testList);
+
+        testList.clear();
+        testList.add(new Point(0, 1));
+        testList.add(new Point(-1, 0));
+        assertEquals(line11.getIntersections(square), testList);
     }
 
     @Test

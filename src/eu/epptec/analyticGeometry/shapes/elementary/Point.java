@@ -80,9 +80,15 @@ public class Point implements BasicShape {
     // If the point lies on the line, they intersect
     private Set<BasicShape> getIntersectionsLine(Line other) {
         Set<BasicShape> intersections = new TreeSet<>();
-        List<Double> genEq = other.getGeneralEquation();
-        if (abs(genEq.get(0) * x + genEq.get(1) * y + genEq.get(2)) < EPS && other.isInBoundary(this))
+        // The line we're comparing to can either be of length zero, then if the points are the same, we return them as
+        // the intersection, otherwise we get the general equation and see if our point fits it
+        if (other.getA().equals(other.getB()) && this.equals(other.getA())) {
             intersections.add(this);
+        } else {
+            List<Double> genEq = other.getGeneralEquation();
+            if (abs(genEq.get(0) * x + genEq.get(1) * y + genEq.get(2)) < EPS && other.isInBoundary(this))
+                intersections.add(this);
+        }
         return intersections;
     }
 
@@ -108,7 +114,6 @@ public class Point implements BasicShape {
         Point otherPoint = (Point)other;
         return round(x * compPrec) == round(otherPoint.getX() * compPrec) &&
                 round(y * compPrec) == round(otherPoint.getY() * compPrec);
-        //return abs(x - otherPoint.getX()) < EPS && abs(y - otherPoint.getY()) < EPS;
     }
 
     @Override
