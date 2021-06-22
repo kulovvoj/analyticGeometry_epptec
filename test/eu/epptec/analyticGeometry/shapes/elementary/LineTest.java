@@ -70,8 +70,10 @@ class LineTest {
         Line line9 = new Line(new Point(1, 1), new Point(-1, 1));
         Line line10 = new Line(new Point(10, 1), new Point(-10, 1));
         Line line11 = new Line(new Point(-2, -1), new Point(1, 2));
+        Line line12 = new Line(new Point(0, 4), new Point(2, 4));
 
-        Circle circle = new Circle(new Point(0, 0), 3);
+        Circle circle1 = new Circle(new Point(0, 0), 3);
+        Circle circle2 = new Circle(new Point(1, 1), 3);
         Square square = new Square(new Point(0, 0), new Point(0, 4));
 
         // Test intersections between lines
@@ -92,24 +94,28 @@ class LineTest {
         // Test intersections with circles
         testList.clear();
         testList.add(new Point(0, 3));
-        assertEquals(line4.getIntersections(circle), testList);
+        assertEquals(line4.getIntersections(circle1), testList);
 
         testList.clear();
-        assertEquals(line1.getIntersections(circle), testList);
+        assertEquals(line1.getIntersections(circle1), testList);
 
         testList.clear();
         testList.add(new Point(0, 3));
         testList.add(new Point(0, -3));
-        assertEquals(line5.getIntersections(circle), testList);
+        assertEquals(line5.getIntersections(circle1), testList);
 
         testList.clear();
         testList.add(new Point(Math.sqrt(9.0 / 2.0), -Math.sqrt(9.0 / 2.0)));
         testList.add(new Point(Math.sqrt(9.0 / 2.0), Math.sqrt(9.0 / 2.0)));
-        assertEquals(line6.getIntersections(circle), testList);
+        assertEquals(line6.getIntersections(circle1), testList);
 
         testList.clear();
         testList.add(new Point(3, 0));
-        assertEquals(line7.getIntersections(circle), testList);
+        assertEquals(line7.getIntersections(circle1), testList);
+
+        testList.clear();
+        testList.add(new Point(1, 4));
+        assertEquals(line12.getIntersections(circle2), testList);
 
         // Test intersections with a square
         testList.clear();

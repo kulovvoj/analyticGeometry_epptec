@@ -203,6 +203,7 @@ public class Line implements BasicShape {
 
     // Line - circle intersections according to https://mathworld.wolfram.com/Circle-LineIntersection.html
     private Set<BasicShape> getIntersectionsCircle(Circle other) {
+        System.out.println("IN");
         // If the line is of length 0
         if (a.equals(b))
             return a.getIntersections(other);
@@ -210,16 +211,22 @@ public class Line implements BasicShape {
         Set<BasicShape> intersections = new TreeSet<>();
         // We will calculate the intersection with the circle's center moved to origin point (0, 0),
         // thus we move the line segment as well
+
+        // ______(-1, 3);(1, 3)
         Line movedLine = this.move(-other.center.getX(), -other.center.getY());
 
+        // ______dx = 2
         double dx = movedLine.getB().getX() - movedLine.getA().getX();
+        // ______dy = 0
         double dy = movedLine.getB().getY() - movedLine.getA().getY();
+        // ______dr = 2
         double dr = movedLine.getLength();
+        // ______D = -6
         double D = movedLine.getA().getX() * movedLine.getB().getY() - movedLine.getA().getY() * movedLine.getB().getX();
         double disc = pow(other.radius, 2) * pow(dr, 2) - pow(D, 2);
         if (disc > -EPS) {
             double x = (D * dy + sgnStar(dy) * dx * sqrt(disc)) / pow(dr, 2) + other.center.getX();
-            double y = (D * dx + abs(dy) * sqrt(disc)) / pow(dr, 2) + other.center.getY();
+            double y = (- D * dx + abs(dy) * sqrt(disc)) / pow(dr, 2) + other.center.getY();
             Point pointTmp = new Point(x, y);
             if (this.isInBoundary(pointTmp))
                 intersections.add(pointTmp);

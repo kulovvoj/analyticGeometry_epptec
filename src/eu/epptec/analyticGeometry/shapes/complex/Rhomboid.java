@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.lang.Math.round;
 
 public class Rhomboid implements Shape {
 
@@ -51,8 +54,8 @@ public class Rhomboid implements Shape {
         return c.move(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    public List<Line> getLines() {
-        List<Line> lines = new LinkedList<>();
+    public Set<Line> getLines() {
+        Set<Line> lines = new TreeSet<>();
         lines.add(new Line(a, b));
         lines.add(new Line(b, c));
         lines.add(new Line(c, getD()));
@@ -83,17 +86,34 @@ public class Rhomboid implements Shape {
     @Override
     public Set<BasicShape> getIntersections(Shape other) {
         Set<BasicShape> intersections = new TreeSet<>();
-        getLines().forEach(line -> intersections.addAll(line.getIntersections(other)));
 
-        // Gets rid of false intersection points, if the line is coincidental with one side of the rhomboid
+        // Add all the intersections
+        intersections.addAll(getLines().stream().flatMap(line -> line.getIntersections(other).stream()).collect(Collectors.toList()));
+
+        // Gets rid of false intersection points, if the line is coincidental and intersects one side of the rhomboid
         if (intersections.stream().map(basicShape -> basicShape instanceof Line).reduce(false, (acc, elem) -> acc || elem))
-            return intersections.stream().filter(basicShape -> !(basicShape instanceof Point)).collect(Collectors.toSet());
+            intersections = intersections.stream().filter(basicShape -> !(basicShape instanceof Point)).collect(Collectors.toCollection(TreeSet::new));
 
         return intersections;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this)
+            return true;
+        if (!(other instanceof Rhomboid))
+            return false;
+        Rhomboid otherRhomb = (Rhomboid)other;
+
+        return this.getLines().equals(otherRhomb.getLines());
     }
 
     @Override
     public String toString() {
         return "Rhomboid - [" + a.toString() + ", " + b.toString() + ", " + c.toString() + ", " + getD().toString() + "]";
     }
+
+
+
+
 }
