@@ -4,7 +4,7 @@ import eu.epptec.analyticGeometry.shapes.Shape;
 import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class Application {
@@ -37,8 +37,16 @@ public class Application {
         return space.getShape(name1).getIntersections(space.getShape(name2));
     }
 
-    @Override
-    public String toString() {
+    public boolean exists(String name) {
+        try {
+            space.getShape(name);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public String spaceToString() {
         return space.toString();
     }
 }

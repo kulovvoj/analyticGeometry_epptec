@@ -42,7 +42,7 @@ public class Circle implements BasicShape {
 
     @Override
     public Set<BasicShape> getIntersections(Shape other) {
-        Set<BasicShape> lst = new TreeSet<BasicShape>();
+        Set<BasicShape> lst = new TreeSet<>();
         if (other instanceof Circle)
             lst.addAll(getIntersectionsCircle((Circle)other));
         else
@@ -50,7 +50,6 @@ public class Circle implements BasicShape {
         return lst;
     }
 
-    // Circle-circle intersection according to https://mathworld.wolfram.com/Circle-CircleIntersection.html
     private Set<BasicShape> getIntersectionsCircle(Circle other) {
         // Make sure that this circle is larger than the one passed as argument for easier computation
         if (other.getRadius() > radius)
@@ -72,11 +71,13 @@ public class Circle implements BasicShape {
         // one circle is not inside the other
         } else if (centersDistance < radius + other.getRadius() + EPS &&
                 !(centersDistance + other.getRadius() < radius + EPS)) {
-            // We calculate the distance from this circle to the line defined by the two intersections (dist1)
-            // and then calculate the positions of the intersections from the radius and this distance
+            // We calculate the distance from this circle to the line defined by the two intersections
             double dist1 = (radius - other.getRadius() + centersDistance) / 2;
-            //double dist1 = (pow(radius, 2) - pow(other.getRadius(), 2) + pow(centersDistance, 2)) / (2 * centersDistance);
+            // and then the height of that line, or in other words the distance of the intersection
+            // from the line connecting the centers of the circles
             double h = sqrt(pow(radius, 2) - pow(dist1, 2));
+            // Now we use the unit vector of the line connecting the two centers to add direction to the distances
+            // resulting in the intersection points
             Point unitVec = centersLine.getUnitVector();
             intersections.add(new Point(center.getX() + unitVec.getX() * dist1 - unitVec.getY() * h,
                     center.getY() + unitVec.getY() * dist1 + unitVec.getX() * h));
@@ -95,9 +96,8 @@ public class Circle implements BasicShape {
     public boolean equals(Object other) {
         if (other == this)
             return true;
-        if (!(other instanceof Circle))
+        if (!(other instanceof Circle otherCircle))
             return false;
-        Circle otherCircle = (Circle)other;
         long pointCmp = center.compareTo(otherCircle.getCenter());
         long thisRadiusInt = round(radius * compPrec);
         long otherRadiusInt = round(otherCircle.getRadius() * compPrec);

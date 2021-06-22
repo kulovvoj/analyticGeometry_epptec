@@ -8,7 +8,7 @@ import java.util.List;
 import static java.lang.Math.*;
 
 public class Point implements BasicShape {
-    private double x, y;
+    final private double x, y;
 
     public Point(double x, double y) {
         this.x = x;
@@ -109,9 +109,8 @@ public class Point implements BasicShape {
     public boolean equals(Object other) {
         if (other == this)
             return true;
-        if (!(other instanceof Point))
+        if (!(other instanceof Point otherPoint))
             return false;
-        Point otherPoint = (Point)other;
         return round(x * compPrec) == round(otherPoint.getX() * compPrec) &&
                 round(y * compPrec) == round(otherPoint.getY() * compPrec);
     }
@@ -127,7 +126,7 @@ public class Point implements BasicShape {
         long otherYInt = round(otherPoint.getY() * compPrec);
         if (thisXInt < otherXInt || (thisXInt == otherXInt && thisYInt < otherYInt))
             return -1;
-        else if (thisXInt > otherXInt || (thisXInt == otherXInt && thisYInt > otherYInt))
+        else if (thisXInt > otherXInt || thisYInt > otherYInt)
             return 1;
         return 0;
     }

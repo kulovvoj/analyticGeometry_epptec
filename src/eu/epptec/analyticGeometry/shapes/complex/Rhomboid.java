@@ -4,15 +4,10 @@ import eu.epptec.analyticGeometry.shapes.Shape;
 import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Line;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
-
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.lang.Math.round;
 
 public class Rhomboid implements Shape {
 
@@ -22,7 +17,7 @@ public class Rhomboid implements Shape {
     //  d ------ c
     // Point d can be calculated when all the other points are known
 
-    private Point a, b, c;
+    final private Point a, b, c;
 
     public Rhomboid(Point a, Point b, Point c) {
         this.a = a;
@@ -61,15 +56,6 @@ public class Rhomboid implements Shape {
         lines.add(new Line(c, getD()));
         lines.add(new Line(getD(), a));
         return lines;
-    }
-
-    public Set<Point> getPoints() {
-        Set<Point> points = new TreeSet<>();
-        points.add(a);
-        points.add(b);
-        points.add(c);
-        points.add(getD());
-        return points;
     }
 
     @Override
@@ -121,10 +107,8 @@ public class Rhomboid implements Shape {
     public boolean equals(Object other) {
         if (other == this)
             return true;
-        if (!(other instanceof Rhomboid))
+        if (!(other instanceof Rhomboid otherRhomb))
             return false;
-        Rhomboid otherRhomb = (Rhomboid)other;
-
         return this.getLines().equals(otherRhomb.getLines());
     }
 

@@ -5,9 +5,15 @@ import eu.epptec.analyticGeometry.shapes.Shape;
 import java.util.*;
 
 public class Space {
-    private Map<String, Shape> shapeMap = new HashMap<>();
+    final private Map<String, Shape> shapeMap = new HashMap<>();
+
+    private void checkExistence(String name) {
+        if (!shapeMap.containsKey(name))
+            throw new NoSuchElementException("Shape with the name \"" + name + "\" doesn't exist.");
+    }
 
     public Shape getShape(String name) {
+        checkExistence(name);
         return shapeMap.get(name);
     }
 
@@ -16,6 +22,7 @@ public class Space {
     }
 
     public void removeShape(String name) {
+        checkExistence(name);
         shapeMap.remove(name);
     }
 
@@ -24,10 +31,10 @@ public class Space {
         String outputStr;
         outputStr = "{";
         List<String> shapeStrList = new LinkedList<>();
-        shapeMap.entrySet().forEach(entry -> shapeStrList.add(entry.getKey() + ": " + entry.getValue().toString()));
+        shapeMap.forEach((key, value) -> shapeStrList.add(key + ": " + value.toString()));
 
         StringJoiner joiner = new StringJoiner(",\n");
-        shapeStrList.forEach(shapeStr -> joiner.add(shapeStr));
+        shapeStrList.forEach(joiner::add);
         outputStr += joiner.toString();
         outputStr += "}";
         return outputStr;

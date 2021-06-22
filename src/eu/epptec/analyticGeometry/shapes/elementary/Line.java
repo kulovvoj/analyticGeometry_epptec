@@ -150,50 +150,6 @@ public class Line implements BasicShape {
         return intersections;
     }
 
-
-    /*private Set<BasicShape> getIntersectionsCircle(Circle other) {
-        Set<BasicShape> intersections = new TreeSet<>();
-
-        double r = other.getRadius();
-        double genEqA, genEqB, genEqC;
-
-        // Get the general equation of the moved line
-        List<Double> generalEquation = this.move(-other.getCenter().getX(), -other.getCenter().getY()).getGeneralEquation();
-        genEqA = generalEquation.get(0);
-        genEqB = generalEquation.get(1);
-        genEqC = generalEquation.get(2);
-
-        double x0 = -genEqA * genEqC / (genEqA * genEqA + genEqB * genEqB);
-        double y0 = -genEqB * genEqC / (genEqA * genEqA + genEqB * genEqB);
-
-        // One intersection
-        if (Math.abs(genEqC * genEqC - r * r * (genEqA * genEqA + genEqB * genEqB)) < EPS) {
-            Point pointTmp = new Point(x0 + other.getCenter().getX(), y0 + other.getCenter().getY());
-            if (this.isInBoundary(pointTmp))
-                intersections.add(pointTmp);
-        }
-        // Two intersections
-        else if (genEqC * genEqC < r * r * (genEqA * genEqA + genEqB * genEqB) + EPS) {
-            System.out.println("HI");
-            System.out.println(this);
-            double d = r  * r - genEqC * genEqC / (genEqA * genEqA + genEqB * genEqB);
-            double mult = Math.sqrt(d / (genEqA * genEqA + genEqB * genEqB));
-            double ax, ay, bx, by;
-            ax = x0 + genEqB * mult + other.getCenter().getX();
-            bx = x0 - genEqB * mult + other.getCenter().getY();
-            ay = y0 - genEqA * mult + other.getCenter().getX();
-            by = y0 + genEqA * mult + other.getCenter().getY();
-
-            Point pointTmp = new Point(ax, ay);
-            if (this.isInBoundary(pointTmp))
-                intersections.add(pointTmp);
-            pointTmp = new Point(bx, by);
-            if (this.isInBoundary(pointTmp))
-                intersections.add(pointTmp);
-        }
-        return intersections;
-    }*/
-
     private int sgnStar (double x) {
         return x < -EPS ? -1 : 1;
     }
@@ -277,9 +233,8 @@ public class Line implements BasicShape {
     public boolean equals(Object other) {
         if (other == this)
             return true;
-        if (!(other instanceof Line))
+        if (!(other instanceof Line otherLine))
             return false;
-        Line otherLine = (Line)other;
         return (this.sortPoints().getA().equals(otherLine.sortPoints().getA()) &&
                 this.sortPoints().getB().equals(otherLine.sortPoints().getB()));
     }
