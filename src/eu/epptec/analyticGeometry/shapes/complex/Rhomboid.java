@@ -63,6 +63,15 @@ public class Rhomboid implements Shape {
         return lines;
     }
 
+    public Set<Point> getPoints() {
+        Set<Point> points = new TreeSet<>();
+        points.add(a);
+        points.add(b);
+        points.add(c);
+        points.add(getD());
+        return points;
+    }
+
     @Override
     public Point getCenter() {
         return (new Line(a, c)).getCenter();
@@ -90,9 +99,20 @@ public class Rhomboid implements Shape {
         // Add all the intersections
         intersections.addAll(getLines().stream().flatMap(line -> line.getIntersections(other).stream()).collect(Collectors.toList()));
 
-        // Gets rid of false intersection points, if the line is coincidental and intersects one side of the rhomboid
-        if (intersections.stream().map(basicShape -> basicShape instanceof Line).reduce(false, (acc, elem) -> acc || elem))
-            intersections = intersections.stream().filter(basicShape -> !(basicShape instanceof Point)).collect(Collectors.toCollection(TreeSet::new));
+        // If the line is coincidental and intersects one side of the rhomboid,
+        // gets rid of false intersection points, which would be included in one of the intersection lines
+        if (intersections.stream()
+                .map(basicShape -> basicShape instanceof Line)
+                .reduce(false, (acc, elem) -> acc || elem)) {
+            Set<BasicShape> setOfLinePoints = intersections.stream()
+                    .filter(basicShape -> basicShape instanceof Line)
+                    .flatMap(line -> Stream.of(((Line) line).getA(), ((Line) line).getB()))
+                    .collect(Collectors.toCollection(TreeSet::new));
+
+            intersections = intersections.stream()
+                    .filter(basicShape -> !(setOfLinePoints.contains(basicShape)))
+                    .collect(Collectors.toCollection(TreeSet::new));
+        }
 
         return intersections;
     }

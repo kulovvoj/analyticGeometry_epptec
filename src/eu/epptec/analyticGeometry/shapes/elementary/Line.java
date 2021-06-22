@@ -10,13 +10,13 @@ public class Line implements BasicShape {
     private final Point a, b;
 
     public Line(Point a, Point b) {
-        if (a.compareTo(b) <= 0) {
+        //if (a.compareTo(b) <= 0) {
             this.a = a;
             this.b = b;
-        } else {
-            this.a = b;
-            this.b = a;
-        }
+        //} else {
+            //this.a = b;
+            //this.b = a;
+        //}
     }
 
     public Point getA() {
@@ -105,11 +105,10 @@ public class Line implements BasicShape {
             if (abs(denom) < EPS) {
                 List<Double> genEqThis = this.getGeneralEquation();
                 List<Double> genEqOther = other.getGeneralEquation();
-                // And whether they are coincidental
-                /*if ((genEqThis.get(0) - genEqOther.get(0)) < EPS &&
+                // And whether they are coincidental (The equations describing them are the same line)
+                if ((genEqThis.get(0) - genEqOther.get(0)) < EPS &&
                         (genEqThis.get(1) - genEqOther.get(1)) < EPS &&
-                        (genEqThis.get(2) - genEqOther.get(2)) < EPS) {*/
-                if (this.getA().getIntersections(other).isEmpty()) {
+                        (genEqThis.get(2) - genEqOther.get(2)) < EPS) {
                     // There are 6 cases of coincidental line segments, that intersect each other
                     if (this.isInBoundary(other.getA()) && this.isInBoundary(other.getB()))
                         intersections.add(other);
@@ -151,9 +150,7 @@ public class Line implements BasicShape {
         return intersections;
     }
 
-    // Calculates the intersections between this line and a circle
-    // We move the circle's center to origin point (0, 0) for easier calculation. After we're
-    // finished with the calculations, we compensate for the movement
+
     /*private Set<BasicShape> getIntersectionsCircle(Circle other) {
         Set<BasicShape> intersections = new TreeSet<>();
 
@@ -202,8 +199,11 @@ public class Line implements BasicShape {
     }
 
     // Line - circle intersections according to https://mathworld.wolfram.com/Circle-LineIntersection.html
+
+    // Calculates the intersections between this line and a circle
+    // We move the circle's center to origin point (0, 0) for easier calculation. After we're
+    // finished with the calculations, we compensate for the movement
     private Set<BasicShape> getIntersectionsCircle(Circle other) {
-        System.out.println("IN");
         // If the line is of length 0
         if (a.equals(b))
             return a.getIntersections(other);
@@ -212,16 +212,12 @@ public class Line implements BasicShape {
         // We will calculate the intersection with the circle's center moved to origin point (0, 0),
         // thus we move the line segment as well
 
-        // ______(-1, 3);(1, 3)
+
         Line movedLine = this.move(-other.center.getX(), -other.center.getY());
 
-        // ______dx = 2
         double dx = movedLine.getB().getX() - movedLine.getA().getX();
-        // ______dy = 0
         double dy = movedLine.getB().getY() - movedLine.getA().getY();
-        // ______dr = 2
         double dr = movedLine.getLength();
-        // ______D = -6
         double D = movedLine.getA().getX() * movedLine.getB().getY() - movedLine.getA().getY() * movedLine.getB().getX();
         double disc = pow(other.radius, 2) * pow(dr, 2) - pow(D, 2);
         if (disc > -EPS) {
@@ -271,6 +267,12 @@ public class Line implements BasicShape {
         return "Line - [" + a.toString() + ", " + b.toString() + "]";
     }
 
+    public Line sortPoints() {
+        if (a.compareTo(b) < 0)
+            return new Line(b, a);
+        return this;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this)
@@ -278,7 +280,8 @@ public class Line implements BasicShape {
         if (!(other instanceof Line))
             return false;
         Line otherLine = (Line)other;
-        return (a.equals(otherLine.getA()) && b.equals(otherLine.getB()));
+        return (this.sortPoints().getA().equals(otherLine.sortPoints().getA()) &&
+                this.sortPoints().getB().equals(otherLine.sortPoints().getB()));
     }
 
     @Override
@@ -289,8 +292,8 @@ public class Line implements BasicShape {
             return -1;
 
         Line otherLine = (Line)other;
-        long pointACmp = a.compareTo(otherLine.getA());
-        long pointBCmp = b.compareTo(otherLine.getB());
+        long pointACmp = this.sortPoints().getA().compareTo(otherLine.sortPoints().getA());
+        long pointBCmp = this.sortPoints().getB().compareTo(otherLine.sortPoints().getB());
 
         if (pointACmp < 0 || (pointACmp == 0 && pointBCmp < 0))
             return -1;

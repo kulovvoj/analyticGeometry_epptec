@@ -59,6 +59,7 @@ class LineTest {
     @Test
     void getIntersections() {
         Set<BasicShape> testList = new TreeSet<>();
+
         Line line1 = new Line(new Point(4, 3), new Point(6, 7));
         Line line2 = new Line(new Point(6, 6), new Point(4, 4));
         Line line3 = new Line(new Point(0, 0), new Point(0, 0));
