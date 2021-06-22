@@ -165,10 +165,9 @@ public class Line implements BasicShape {
             return a.getIntersections(other);
 
         Set<BasicShape> intersections = new TreeSet<>();
+
         // We will calculate the intersection with the circle's center moved to origin point (0, 0),
         // thus we move the line segment as well
-
-
         Line movedLine = this.move(-other.center.getX(), -other.center.getY());
 
         double dx = movedLine.getB().getX() - movedLine.getA().getX();

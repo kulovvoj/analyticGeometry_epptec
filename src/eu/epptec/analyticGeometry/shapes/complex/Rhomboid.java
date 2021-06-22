@@ -116,8 +116,4 @@ public class Rhomboid implements Shape {
     public String toString() {
         return "Rhomboid - [" + a.toString() + ", " + b.toString() + ", " + c.toString() + ", " + getD().toString() + "]";
     }
-
-
-
-
 }
