@@ -9,4 +9,13 @@ public interface BasicShape extends Shape, Comparable<BasicShape> {
 
     @Override
     int compareTo(BasicShape other);
+
+    @Override
+    public BasicShape move(double x, double y);
+
+    @Override
+    public BasicShape rotate(double angle);
+
+    @Override
+    public BasicShape rotate(double angle, Point pivot);
 }

@@ -3,7 +3,6 @@ package eu.epptec.analyticGeometry.shapes;
 import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
-import java.util.List;
 import java.util.Set;
 
 public interface Shape {

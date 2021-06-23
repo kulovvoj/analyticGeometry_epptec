@@ -31,12 +31,12 @@ public class Circle implements BasicShape {
     }
 
     @Override
-    public Shape rotate(double angle) {
+    public Circle rotate(double angle) {
         return this;
     }
 
     @Override
-    public Shape rotate(double angle, Point pivot) {
+    public Circle rotate(double angle, Point pivot) {
         return new Circle(center.rotate(angle, pivot), radius);
     }
 

@@ -7,9 +7,4 @@ public class Square extends Rectangle {
     public Square(Point a, Point b) {
         super(a, b, new Line(a, b).getLength());
     }
-
-    @Override
-    public String toString() {
-        return "Square - [" + getA().toString() + ", " + getB().toString() + ", " + getC().toString() + ", " + getD().toString() + "]";
-    }
 }

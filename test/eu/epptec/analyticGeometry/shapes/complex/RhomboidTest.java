@@ -109,7 +109,7 @@ class RhomboidTest {
         assertEquals(rhomboid2.getIntersections(circle3), testList);
 
         // Other rhomboid intersection
-        assertEquals(rhomboid1.getIntersections(rhomboid1), rhomboid1.getLines());
+        assertEquals(rhomboid1.getIntersections(rhomboid1), rhomboid1);
 
         testList.clear();
         testList.add(new Line(new Point(2, 1), new Point(4, 1)));
