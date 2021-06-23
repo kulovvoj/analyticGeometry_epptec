@@ -20,8 +20,16 @@ abstract class ComplexShape implements Shape {
 
     @Override
     public Set<BasicShape> getIntersections(Shape other) {
-        return components.stream()
+        // Gets all the intersections of the components and the other shape
+        Set<BasicShape> intersections = components.stream()
                 .flatMap(elem -> other.getIntersections(elem).stream())
+                .collect(Collectors.toCollection(TreeSet::new));
+        // Filters those that are included in others
+        // For example a Point (0, 0) if there already is a line (0, 0), (0, 4)
+        return intersections.stream()
+                .filter(shape -> intersections.stream()
+                        .map(otherShape -> shape.equals(otherShape) || !shape.getIntersections(otherShape).contains(shape))
+                        .reduce(true, (acc, bool) -> acc && bool))
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
