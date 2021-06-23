@@ -4,7 +4,6 @@ import eu.epptec.analyticGeometry.shapes.Shape;
 import eu.epptec.analyticGeometry.shapes.elementary.BasicShape;
 import eu.epptec.analyticGeometry.shapes.elementary.Point;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -14,11 +13,6 @@ abstract class ComplexShape implements Shape {
     Point center = new Point(0, 0);
 
     public ComplexShape() {}
-
-    public ComplexShape(Set<BasicShape> components, Point center) {
-        this.components = components;
-        this.center = center;
-    }
 
     public Set<BasicShape> getComponents() {
         return components;
